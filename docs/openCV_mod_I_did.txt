@@ -1,0 +1,33 @@
+Cvcap_w32.cpp (line 97 )] : < HighGUI module >
+
+I have Replaced the following code:
+
+“icvFFOpenCV = LoadLibrary( ffopencv_name );
+
+    By
+
+
+“# if 0 //Test : subarna
+        icvFFOpenCV = LoadLibrary( ffopencv_name );
+# else
+        icvFFOpenCV = LoadLibraryEx(
+        TEXT("%s", ffopencv_name),                     
+	NULL,
+        LOAD_WITH_ALTERED_SEARCH_PATH );
+# endif
+
+
+
+#############################################################
+ref : http://article.gmane.org/gmane.comp.lib.opencv/27025
+#############################################################
+
+
+
+#############################################################
+installing and compiling openCV2.0 in windows
+
+http://sites.google.com/site/sanchohomesite/tutorials/installing-opencv-in-windows
+
+details are given in "OpenCV-2.0.0a-win32.Readme.Please.txt"
+#############################################################

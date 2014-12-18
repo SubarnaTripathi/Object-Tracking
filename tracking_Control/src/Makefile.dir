@@ -1,0 +1,202 @@
+################################################################################
+# Makefile.dir
+# Copyright (C) 2000, by A. Borneo - STMicroelectronics
+#
+# This file is intended as a standard Makefile for compiling programs.
+# If it is not strickly required, DO NOT MODIFY IT.
+# If you have usefull proposals for this file, please let me know.
+################################################################################
+
+################################################################################
+# This section defines the variables used by this Makefile.
+# They should be defined in the upper Makfiles through the "export" directive
+################################################################################
+
+
+ifeq (0,$(MAKELEVEL))
+  CC       = gcc
+  WARNINGS = -Wall -ansi -pedantic
+  CFLAGS   = -O3 $(WARNINGS) -I../inc
+  LINK     = -lm
+
+  EXE_NAME := a.out
+  
+  EXT_DIR :=
+  COMMON_SRC :=
+  
+  CMD_COMP := $(CC) $(CFLAGS)
+  EXT_COMP :=
+  CMD_LINK := $(CC) $(CFLAGS) $(LINK)
+  EXT_LINK :=
+
+  CMD_DEP := $(CC) $(CFLAGS) -MM
+  EXT_DEP :=
+  CMD_DEF := $(CC) $(CFLAGS) -E -dM
+  EXT_DEF :=
+
+  CMD_TOUCH := /bin/touch -t `date '+%y%m%d%H%M.%S'`
+# CMD_TOUCH := /bin/gnu/touch -t `date '+%m%d%H%M%y.%S'`
+endif
+
+
+################################################################################
+# This section defines the working directories:
+# OBJ_DIR for object files (*.o);
+# ASM_DIR for assembler files (*.s);
+# DEP_DIR for dependencies files (*.d);
+# BIN_DIR for binary executable file.
+#
+# If current dir is ../src, then
+#   it searchs for ../obj/ ../asm/ ../dep/ ../bin/
+# else
+#   it searchs for  ./obj/  ./asm/  ./dep/  ./bin/
+# if not found then it use current dir
+################################################################################
+
+
+ifeq ($(notdir $(shell pwd)),src)
+  SEARCH_DIR := ../
+else
+  SEARCH_DIR :=
+endif
+
+ifdef EXT_DIR
+  OBJ_DIR := $(dir $(wildcard $(SEARCH_DIR)obj/$(EXT_DIR)/.))
+  ASM_DIR := $(dir $(wildcard $(SEARCH_DIR)asm/$(EXT_DIR)/.))
+  DEP_DIR := $(dir $(wildcard $(SEARCH_DIR)dep/$(EXT_DIR)/.))
+  BIN_DIR := $(dir $(wildcard $(SEARCH_DIR)bin/$(EXT_DIR)/.))
+else
+  OBJ_DIR := $(dir $(wildcard $(SEARCH_DIR)obj/.))
+  ASM_DIR := $(dir $(wildcard $(SEARCH_DIR)asm/.))
+  DEP_DIR := $(dir $(wildcard $(SEARCH_DIR)dep/.))
+  BIN_DIR := $(dir $(wildcard $(SEARCH_DIR)bin/.))
+endif
+
+
+################################################################################
+# This section lists in SOURCES all .c files in the current dir, in ./src*/ and 
+# in $(COMMON_SRC)/
+# The .o and .d names are generated consequently.
+# If required, change the ./src_*/ dir in the SEARCH_C definition.
+# The "ifneq" syntax is very critical, so please be carefull.
+################################################################################
+
+
+SEARCH_C = $(wildcard $(1) src_*/$(1) $(COMMON_SRC)/$(1))
+
+
+SOURCES := $(call SEARCH_C,*.c)
+OBJS := $(addprefix $(OBJ_DIR), $(notdir $(SOURCES:.c=.o)))
+DEPS := $(addprefix $(DEP_DIR), $(notdir $(SOURCES:.c=.d)))
+
+
+ifneq ($(words $(sort $(OBJS))), $(words $(SOURCES)))
+  $(shell echo Error: Duplicated filenames: >&2)
+  $(foreach n, \
+    $(sort $(notdir $(SOURCES))), \
+      $(if \
+        $(filter-out 1, $(words $(call SEARCH_C,$(n)))), \
+        $(shell echo '      ' $(call SEARCH_C,$(n)) >&2) \
+       ) \
+   )
+  $(shell echo ' ' >&2)
+  $(error )
+endif
+
+
+################################################################################
+# This section defines the output binary file
+################################################################################
+
+
+EXE_BIN := $(BIN_DIR)$(EXE_NAME)
+
+
+################################################################################
+# The following lines, until the end of this file, are in the form
+#	<target>: <dependencies>
+#	<TAB>command ...
+# each target can be addressed using the UNIX command:
+#	make <target>
+#
+# The first target (default) is the default one and is addressed when "make" is
+# called without explicit target
+#
+# The optionally .PHONY directive defines internal targets NOT related with file
+# names. It avoids both loosing time in unusefull checks and execution errors.
+################################################################################
+
+
+.PHONY : default all clean def defines deps
+
+
+all default: $(EXE_BIN) 
+
+
+clean:
+	rm -f $(EXE_BIN) $(OBJ_DIR)*.o $(ASM_DIR)*.s $(DEP_DIR)*.d *% *~ *.BAK
+
+
+def defines:
+	@ echo
+	@ $(CMD_DEF) $(EXT_DEF) ../common_hdr/global_ast_defines.h | fgrep '#define' | sort
+	@ echo
+
+
+deps: $(DEPS)
+
+
+$(EXE_BIN): $(OBJS)
+	$(CMD_LINK) $(EXT_LINK) $(OBJS) -o $(EXE_BIN) -lm
+
+
+$(OBJS): ../common_hdr/global_ast_defines.h Makefile.dir
+	$(CMD_COMP) $(EXT_COMP) -c $(call SEARCH_C,$(@F:.o=.c)) -o $@
+    ifdef ASM_DIR
+	@if [ -f $(@F:.o=.s) ] ; then mv -f $(@F:.o=.s) $(ASM_DIR) ; fi
+    endif
+
+
+################################################################################
+# Dependencies files building and including.
+# - The first 'echo' writes the dependencies;
+# - the second 'echo' is only for debugging. It allows the printing of a
+#   comment during the including of the '.d'
+# - the 'touch' is performed to avoid time misalignment between host and server.
+#   It is useless if the file system is local on the host. The format string of
+#   'date' depends on 'touch'. For GNU-touch it should be '+%m%d%H%M%y.%S';
+# - the 'make' is to check the correctness. If error, the '.d' is deleted thanks
+#   to the '.DELETE_ON_ERROR' target. This avoid including wrong '.d';
+################################################################################
+
+
+.DELETE_ON_ERROR:
+
+
+$(DEPS): ../common_hdr/global_ast_defines.h Makefile.dir
+	@echo $@ $(OBJ_DIR)$(shell $(CMD_DEP) $(EXT_DEP) \
+	                     $(call SEARCH_C,$(@F:.d=.c))) > $@
+#	@echo '$$('shell echo Including $@ '>&2)' >> $@
+    ifdef CMD_TOUCH
+	@$(CMD_TOUCH) $@
+    endif
+	@$(MAKE) --silent --dry-run -f $@
+
+
+################################################################################
+# In this section all the generated ".d" files are included.
+# The "ifneq" syntax is very critical, so please be carefull. Do not put blancks
+# between the brackets.
+################################################################################
+
+
+ifneq ($(MAKECMDGOALS),clean)
+ ifneq ($(MAKECMDGOALS),def)
+  ifneq ($(MAKECMDGOALS),defines)
+   ifneq ($(MAKECMDGOALS),deps)
+    -include $(DEPS)
+   endif
+  endif
+ endif
+endif
+

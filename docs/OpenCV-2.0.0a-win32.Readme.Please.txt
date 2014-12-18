@@ -1,0 +1,111 @@
+This is OpenCV 2.0, the installation package for Windows.
+
+The major new features:
+=======================
+
+* the brand-new C++ interface,
+  in addition to the existing OpenCV 1.x C API.
+
+* a lot of new functionality, especially in the area
+  of feature detectors and descriptors
+
+* SSE2 optimization of many functions
+
+* the revised directory structure and
+  the completely new CMake-based build system
+
+* completely new documentation, available
+  offline as PDF (included) and online:
+  http://opencv.willowgarage.com/documentation/index.html
+
+and a lot more; please, see the ChangeLog.
+
+
+Important installation notes:
+=============================
+
+1. The library is better to be installed to a directory _without_
+   a space in its name, such as the default C:\OpenCV2.0 -
+   otherwise (e.g. if you install it to C:\Program Files\OpenCV2.0)
+   you may get compile errors.
+   This is a limitation of the current build scripts. 
+
+2. Due to many technical problems the installation package does
+   not include pre-compiled OpenCV libraries for Visual Studio users.
+
+   Instead, it includes libraries built with MinGW 4.3.3 TDM-SJLJ.
+
+   They are good enough to run the C/C++ and Python samples and tests,
+   but for developing your OpenCV-based applications using
+   Visual Studio, Borland IDE etc., or even a different version of MinGW,
+   you need to build the libraries with your compiler using CMake,
+   as explained here:
+      http://opencv.willowgarage.com/wiki/InstallGuide.
+   
+   Here is the procedure at glance:
+   --------------------------------
+   1. Download CMake from http://www.cmake.org/cmake/resources/software.html
+      and install it.
+
+   2. Run CMake GUI tool and configure OpenCV there:
+      2.1. select C:\OpenCV2.0 (or the installation directory you chose)
+           as the source directory;
+      2.2. choose some other directory name for the generated project files, e.g.
+           C:\OpenCV2.0\vs2008, or D:\Work\OpenCV_MinGW etc.
+      2.3. press Configure button, select your preferrable build environment
+      2.4. adjust any options at your choice
+      2.5. press Configure again, then press Generate.
+      
+   3a. In the case of Visual Studio or any other IDE, open the generated
+      solution/workspace/project ..., e.g. C:\OpenCV2.0\vs2008\OpenCV.sln,
+      build it in Release and Debug configurations.
+   3b. In the case of command-line Makefiles, enter the destination directory
+       and type "make" (or "nmake" etc.) 
+      
+   4. Add the output directories to the system path, e.g.:
+      C:\OpenCV2.0\vs2008\bin\Debug;C:\OpenCV2.0\vs2008\bin\Release:%PATH%
+      It is safe to add both directories, since the Debug
+      OpenCV DLLs have the "d" suffix, which the Release DLLs do not have.
+      
+   5. Optionally, add C:\OpenCV2.0\include\opencv to the list of
+      include directories in your IDE settings,
+      and the output library directories
+      (e.g. C:\OpenCV2.0\vs2008\lib\{Debug,Release})
+      to the list of library paths.
+
+   It is important to build both release and debug configurations, and link
+   you code with the proper libraries in each configuration,
+   otherwise various compile-time or run-time errors are possible.
+
+Known issues:
+=============
+   
+1. Python 2.6 bindings for OpenCV are included within the package,
+   but not installed.
+   You can copy the subdirectory opencv/Python2.6/Lib/site-packages into
+   the respective directory of the Python installation.
+   This procedure will be automated in the next OpenCV update.
+
+2. Several (actually, most) SWIG-based Python samples do not work correctly now.
+   The reason is this problem is being investigated and the intermediate update
+   of the OpenCV Python package will be released as soon as the problem is sorted out.
+
+3. The library has not been tested on 64-bit Windows versions.
+   But it is known to have some limitations in the highgui part, such as
+   the lack of FFMPEG and DirectShow support.
+
+4. The library can be built with VS2003.NET, and all the tests pass,
+   but DirectShow support (via videoInput library) is not included.
+
+
+Differences between OpenCV-2.0.0-win32.exe and OpenCV-2.0.0a-win32.exe:
+=======================================================================
+
+1. Visual Studio 2003.NET is now supported
+
+2. Corrected bug in matrix routines that could produce incorrect results
+   or even cause runtime errors.
+   
+3. A few other minor changes to sync the content with
+   the source package for Unix.
+

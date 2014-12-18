@@ -1,0 +1,1 @@
+"Debug/object_tracker2.0.exe" -f tracker_config.txt >test_out.txt

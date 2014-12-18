@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "object_tracking", "..\tracking_Control\tracking_Control\object_tracking.vcxproj", "{F69FF04B-3349-4475-8EBB-42109C24410D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		DebugMMX|Win32 = DebugMMX|Win32
+		Release|Win32 = Release|Win32
+		ReleaseFast|Win32 = ReleaseFast|Win32
+		ReleaseMMX|Win32 = ReleaseMMX|Win32
+		Vtune|Win32 = Vtune|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.Debug|Win32.Build.0 = Debug|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.DebugMMX|Win32.ActiveCfg = Debug|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.DebugMMX|Win32.Build.0 = Debug|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.Release|Win32.ActiveCfg = Release|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.Release|Win32.Build.0 = Release|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.ReleaseFast|Win32.ActiveCfg = Release|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.ReleaseFast|Win32.Build.0 = Release|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.ReleaseMMX|Win32.ActiveCfg = Release|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.ReleaseMMX|Win32.Build.0 = Release|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.Vtune|Win32.ActiveCfg = Release|Win32
+		{F69FF04B-3349-4475-8EBB-42109C24410D}.Vtune|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		AMDCaProjectFile = C:\office_proj\demo\PVC_object_tracking\tracking_solution\CodeAnalyst\object_tracking.caw
+		AMDCaPersistentStartup = object_tracking
+		AMDCaPersistentConfig = Debug|Win32
+	EndGlobalSection
+EndGlobal
