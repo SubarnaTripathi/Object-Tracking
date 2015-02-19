@@ -5,7 +5,7 @@
  *            It controls the command line and calls all the tracking/encoding functions.
  *            It contains the real "main" function.
  *
- *  \author <a href="mailto: subarna.tripathi@st.com"> Subarna Tripathi (subarna.tripathi@st.com) </a>
+ *  \author <a href="mailto: subarna.tripathi@gmail.com"> Subarna Tripathi (subarna.tripathi@gmail.com) </a>
  *  \date   2009
  ***************************************************************************************
  *  \mainpage
